@@ -16,19 +16,19 @@ There are 2 micro services and 1 API gateway.
 
 ## API gateway
 
-- Add variables into .env file (Variables provided in .env.example file of API gateway repository)
+- Add variables into .env file (Variables provided in .env.example file of API gateway folder)
 - Run command `npm i` to install dependancy
 - Run command `npm run start:dev` to start server of API gateway
 
 ## service one
 
-- Add variables into .env file (Variables provided in .env.example file of user service repository)
+- Add variables into .env file (Variables provided in .env.example file of service one folder)
 - Run command `npm i` to install dependancy
 - Run command `npm run start:dev` to start server of API gateway
 
 ## service two
 
-- Add variables into .env file (Variables provided in .env.example file of poll service repository)
+- Add variables into .env file (Variables provided in .env.example file of service two)
 - Run command `npm i` to install dependancy
 - Run command `npm run start:dev` to start server of API gateway
 
