@@ -1,4 +1,4 @@
-# Backend overview
+# Microservice overview
 
 There are 2 micro services and 1 API gateway.
 
@@ -7,7 +7,7 @@ There are 2 micro services and 1 API gateway.
 
 &nbsp;
 
-# Backend setup
+# Microservice setup
 
 ### Pre requisite
 
@@ -34,7 +34,7 @@ There are 2 micro services and 1 API gateway.
 
 &nbsp;
 
-# Backend setup references
+# Microservice setup references
 
 ### Microservice setup
 
