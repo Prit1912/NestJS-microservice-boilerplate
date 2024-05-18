@@ -2,8 +2,8 @@
 
 There are 2 micro services and 1 API gateway.
 
-1. User service
-2. Poll service
+1. service one
+2. service two
 
 &nbsp;
 
