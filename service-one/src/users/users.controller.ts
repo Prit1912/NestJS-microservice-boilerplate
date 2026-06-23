@@ -1,45 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { ClientProxy, MessagePattern } from '@nestjs/microservices';
-require('dotenv').config();
 
 @Controller('users')
 export class UsersController {
-  private serviceTwoClient: ClientProxy;
-
   constructor(private readonly usersService: UsersService) {}
 
   @MessagePattern({ cmd: 'create-user' })
   @Post('create-user')
-  async create(@Body() payload) {
-    const userData = payload?.body || {};
-    return await this.usersService.create(userData);
+  create(@Body() payload: { body?: unknown }) {
+    return this.usersService.create(payload?.body ?? {});
   }
 
   @MessagePattern({ cmd: 'get-all-users' })
   @Get('get-all-users')
-  async findAll() {
-    return await this.usersService.findAll();
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @MessagePattern({ cmd: 'get-user-by-id' })
   @Get('get-user-by-id')
-  async findOne(@Body() payload) {
-    const { id = '' } = payload;
-    return await this.usersService.findOne(id);
+  findOne(@Body() payload: { id?: string }) {
+    return this.usersService.findOne(payload?.id ?? '');
   }
 
   @MessagePattern({ cmd: 'update-user' })
   @Patch('update-user')
-  async update(@Body() payload) {
-    const { id = '', body = {} } = payload;
-    return this.usersService.update(id, body);
+  update(@Body() payload: { id?: string; body?: unknown }) {
+    return this.usersService.update(payload?.id ?? '', payload?.body ?? {});
   }
 
   @MessagePattern({ cmd: 'delete-user' })
   @Delete('delete-user')
-  async remove(@Body() payload) {
-    const { id = '' } = payload;
-    return this.usersService.remove(id);
+  remove(@Body() payload: { id?: string }) {
+    return this.usersService.remove(payload?.id ?? '');
   }
 }

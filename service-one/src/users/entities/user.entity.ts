@@ -35,25 +35,6 @@ UserSchema.index({ mobile: 1 }, { unique: true, sparse: true });
 UserSchema.index({ email: 1 }, { unique: true, sparse: true });
 UserSchema.index({ age: 1 });
 
-// Hook example
-UserSchema.pre('save', function (next) {
-  console.log('User is about to be saved:', this);
-  next();
-});
-
-// Virtual method exmaple
-UserSchema.virtual('virtual_field').get(function () {
-  return `${this.username} ${this.age}`;
-});
-
-// Instance method example
-UserSchema.methods.getAge = function () {
-  const now = new Date();
-  const dob = new Date(this.dateOfBirth || '2000-12-19');
-  const ageInYears = now.getFullYear() - dob.getFullYear();
-  return ageInYears;
-};
-
 UserSchema.set('toJSON', { getters: true, virtuals: true });
 
 export type UserDocument = HydratedDocument<User>;

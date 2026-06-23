@@ -1,11 +1,13 @@
 import * as Joi from 'joi';
+import { auditFieldsSchema } from 'src/utils/validations/schemaValidation';
 
-export const CreatePostSchema = Joi.object({
+export const PostFieldsSchema = Joi.object({
   title: Joi.string(),
   description: Joi.string(),
   author: Joi.string(),
-  createdBy: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
-  updatedBy: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
-  updatedAt: Joi.date(),
-  createdAt: Joi.date(),
+  ...auditFieldsSchema,
 }).options({ abortEarly: true });
+
+/** Create and update share the same field rules for this resource. */
+export const CreatePostSchema = PostFieldsSchema;
+export const UpdatePostSchema = PostFieldsSchema;

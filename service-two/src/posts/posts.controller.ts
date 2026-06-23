@@ -1,14 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
@@ -16,41 +8,37 @@ export class PostsController {
 
   @MessagePattern({ cmd: 'calling-from-service-one' })
   @Get()
-  callingFromServiceOne(@Body() payload) {
-    return payload.message || '';
+  callingFromServiceOne(@Body() payload: { message?: string }) {
+    return payload?.message ?? '';
   }
 
   @MessagePattern({ cmd: 'create-post' })
   @Post('create-post')
-  async create(@Body() payload) {
-    const postData = payload?.body || {};
-    return await this.postsService.create(postData);
+  create(@Body() payload: { body?: unknown }) {
+    return this.postsService.create(payload?.body ?? {});
   }
 
   @MessagePattern({ cmd: 'get-all-posts' })
   @Get('get-all-posts')
-  async findAll() {
-    return await this.postsService.findAll();
+  findAll() {
+    return this.postsService.findAll();
   }
 
   @MessagePattern({ cmd: 'get-post-by-id' })
   @Get('get-post-by-id')
-  async findOne(@Body() payload) {
-    const { id = '' } = payload;
-    return await this.postsService.findOne(id);
+  findOne(@Body() payload: { id?: string }) {
+    return this.postsService.findOne(payload?.id ?? '');
   }
 
   @MessagePattern({ cmd: 'update-post' })
   @Patch('update-post')
-  async update(@Body() payload) {
-    const { id = '', body = {} } = payload;
-    return this.postsService.update(id, body);
+  update(@Body() payload: { id?: string; body?: unknown }) {
+    return this.postsService.update(payload?.id ?? '', payload?.body ?? {});
   }
 
   @MessagePattern({ cmd: 'delete-post' })
   @Delete('delete-post')
-  async remove(@Body() payload) {
-    const { id = '' } = payload;
-    return this.postsService.remove(id);
+  remove(@Body() payload: { id?: string }) {
+    return this.postsService.remove(payload?.id ?? '');
   }
 }
