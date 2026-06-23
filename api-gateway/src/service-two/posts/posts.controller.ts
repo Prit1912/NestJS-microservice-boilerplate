@@ -10,73 +10,73 @@ import {
   Response,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
+import { Response as ExpressResponse } from 'express';
 import { MICROSERVICE_TWO_NAME } from 'src/utils/constants/microserviceNames';
-import { customError } from 'src/utils/errors/customError';
+import { proxyToMicroservice } from 'src/utils/microservice/proxy';
 
 @Controller('posts')
 export class PostsController {
   constructor(
-    @Inject(MICROSERVICE_TWO_NAME) private readonly userClient: ClientProxy,
+    @Inject(MICROSERVICE_TWO_NAME) private readonly postsClient: ClientProxy,
   ) {}
 
   @Post()
-  async create(@Body() payload, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'create-post' }, { body: payload }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  create(@Body() payload: unknown, @Response() response: ExpressResponse) {
+    return proxyToMicroservice(
+      this.postsClient,
+      'create-post',
+      { body: payload },
+      response,
+    );
   }
 
   @Get()
-  async findAll(@Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'get-all-posts' }, {}),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  findAll(@Response() response: ExpressResponse) {
+    return proxyToMicroservice(
+      this.postsClient,
+      'get-all-posts',
+      {},
+      response,
+    );
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'get-post-by-id' }, { id }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  findOne(
+    @Param('id') id: string,
+    @Response() response: ExpressResponse,
+  ) {
+    return proxyToMicroservice(
+      this.postsClient,
+      'get-post-by-id',
+      { id },
+      response,
+    );
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() payload, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'update-post' }, { id, body: payload }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  update(
+    @Param('id') id: string,
+    @Body() payload: unknown,
+    @Response() response: ExpressResponse,
+  ) {
+    return proxyToMicroservice(
+      this.postsClient,
+      'update-post',
+      { id, body: payload },
+      response,
+    );
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'delete-post' }, { id }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  remove(
+    @Param('id') id: string,
+    @Response() response: ExpressResponse,
+  ) {
+    return proxyToMicroservice(
+      this.postsClient,
+      'delete-post',
+      { id },
+      response,
+    );
   }
 }

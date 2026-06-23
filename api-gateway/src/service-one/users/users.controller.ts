@@ -10,9 +10,9 @@ import {
   Response,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
+import { Response as ExpressResponse } from 'express';
 import { MICROSERVICE_ONE_NAME } from 'src/utils/constants/microserviceNames';
-import { customError } from 'src/utils/errors/customError';
+import { proxyToMicroservice } from 'src/utils/microservice/proxy';
 
 @Controller('users')
 export class UsersController {
@@ -21,66 +21,57 @@ export class UsersController {
   ) {}
 
   @Post()
-  async createUser(@Body() payload, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'create-user' }, { body: payload }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  createUser(@Body() payload: unknown, @Response() response: ExpressResponse) {
+    return proxyToMicroservice(
+      this.userClient,
+      'create-user',
+      { body: payload },
+      response,
+    );
   }
 
   @Get()
-  async getAllUsers(@Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'get-all-users' }, {}),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  getAllUsers(@Response() response: ExpressResponse) {
+    return proxyToMicroservice(this.userClient, 'get-all-users', {}, response);
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'get-user-by-id' }, { id }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  getUserById(
+    @Param('id') id: string,
+    @Response() response: ExpressResponse,
+  ) {
+    return proxyToMicroservice(
+      this.userClient,
+      'get-user-by-id',
+      { id },
+      response,
+    );
   }
 
   @Patch(':id')
-  async updateUser(
+  updateUser(
     @Param('id') id: string,
-    @Body() payload,
-    @Response() response,
+    @Body() payload: unknown,
+    @Response() response: ExpressResponse,
   ) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'update-user' }, { id, body: payload }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+    return proxyToMicroservice(
+      this.userClient,
+      'update-user',
+      { id, body: payload },
+      response,
+    );
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string, @Response() response) {
-    try {
-      const result = await lastValueFrom(
-        this.userClient.send({ cmd: 'delete-user' }, { id }),
-      );
-      return response.send(result);
-    } catch (error) {
-      return customError(error, response);
-    }
+  deleteUser(
+    @Param('id') id: string,
+    @Response() response: ExpressResponse,
+  ) {
+    return proxyToMicroservice(
+      this.userClient,
+      'delete-user',
+      { id },
+      response,
+    );
   }
 }
