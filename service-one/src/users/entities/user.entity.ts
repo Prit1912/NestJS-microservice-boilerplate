@@ -35,10 +35,9 @@ UserSchema.index({ mobile: 1 }, { unique: true, sparse: true });
 UserSchema.index({ email: 1 }, { unique: true, sparse: true });
 UserSchema.index({ age: 1 });
 
-// Hook example
-UserSchema.pre('save', function (next) {
+// Hook example (Mongoose 9: async middleware, no next callback)
+UserSchema.pre('save', function () {
   console.log('User is about to be saved:', this);
-  next();
 });
 
 // Virtual method exmaple
